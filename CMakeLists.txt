@@ -7,5 +7,4 @@ target_include_directories(nXoshiro256 PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_
 
 target_compile_options(nXoshiro256 PRIVATE 
     -O2 
-    -march=generic
 )
