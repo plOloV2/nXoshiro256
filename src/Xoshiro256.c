@@ -10,8 +10,6 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "Xoshiro256.h"
-
 typedef struct{
     uint64_t s[4];
 }xoshiro256_state;
@@ -37,6 +35,13 @@ static uint64_t create_rand_seed(){
 }
 
 
+/**
+ * @brief Creates initialized xoshiro256_state
+ * 
+ * @param seed user provided seed for algorithm, 0 equals random seed created by algorithm.
+ * 
+ * @returns Pointer to valid xoshiro256_state struct.
+ */
 xoshiro256_state* xoshiro_init(uint64_t seed){
 
     if(seed == 0)
@@ -64,12 +69,20 @@ xoshiro256_state* xoshiro_init(uint64_t seed){
 
 }
 
-/**@brief Circular 64bit shift. */
+/** @brief Circular 64bit shift. */
 static inline uint64_t rotl(const uint64_t x, int k){
     return (x << k) | (x >> (64 - k));
 }
 
 
+
+/**
+ * @brief Generate random 64-bit number.
+ * 
+ * @param state pointer to xoshiro256_state struct.
+ * 
+ * @returns Semi random 64-bit number.
+ */
 uint64_t xoshiro_next(xoshiro256_state *state){
     const uint64_t result = rotl(state->s[1] * 5, 7) * 9;
     const uint64_t t = state->s[1] << 17;
@@ -85,6 +98,12 @@ uint64_t xoshiro_next(xoshiro256_state *state){
 
 }
 
+
+/**
+ * @brief Free memory from xoshiro256_state.
+ * 
+ * @param state pointer to xoshiro256_state struct to be freed.
+ */
 void destroy_xoshiro(xoshiro256_state *state){
 
     if(state) 
