@@ -10,13 +10,14 @@
 #include <stdio.h>
 #include <time.h>
 
+#include "Xoshiro256.h"
 
 typedef struct{
     uint64_t s[4];
 }xoshiro256_state;
 
 
-// creates random seed to seed xoshiro algorithm throu splitmix64
+/** @brief Creates random seed to seed xoshiro algorithm throu splitmix64. */
 static uint64_t create_rand_seed(){
 
     uint64_t seed = 0;
@@ -35,10 +36,13 @@ static uint64_t create_rand_seed(){
 
 }
 
-// splitmix64 algorithm uses 64bit seed to properly seed xoshiro algorithm
-xoshiro256_state* xoshiro_init(){
 
-    uint64_t seed = create_rand_seed();
+xoshiro256_state* xoshiro_init(uint64_t seed){
+
+    if(seed == 0)
+    {
+        seed = create_rand_seed();
+    }
 
     xoshiro256_state *state = (xoshiro256_state*)malloc(sizeof(xoshiro256_state));
 
@@ -60,12 +64,12 @@ xoshiro256_state* xoshiro_init(){
 
 }
 
-// circular 64bit shift
+/**@brief Circular 64bit shift. */
 static inline uint64_t rotl(const uint64_t x, int k){
     return (x << k) | (x >> (64 - k));
 }
 
-// xoshiro256 implementation
+
 uint64_t xoshiro_next(xoshiro256_state *state){
     const uint64_t result = rotl(state->s[1] * 5, 7) * 9;
     const uint64_t t = state->s[1] << 17;
